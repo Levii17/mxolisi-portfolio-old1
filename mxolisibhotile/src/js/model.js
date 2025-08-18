@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-
 const canvas = document.querySelector('#three-canvas');
 // Mobile canvas sizing fix
 function setCanvasSize() {
@@ -22,8 +21,9 @@ if (!window.WebGLRenderingContext) {
 
 const scene = new THREE.Scene();
 
+// Improved camera initialization
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 1, 5);
+camera.position.set(0, 0.8, 7); // Better vertical centering
 
 const renderer = new THREE.WebGLRenderer({ 
   canvas, 
@@ -109,18 +109,19 @@ function resizeModel() {
   const dpr = window.devicePixelRatio > 1 ? Math.min(1.5, window.devicePixelRatio) : 1;
   renderer.setPixelRatio(dpr);
 
+  // Improved positioning for different screen sizes
   if (width < 600) {
     model.scale.set(0.8, 0.8, 0.8);
-    camera.position.set(0, 1.2, 4);
-    camera.fov = 55;
+    camera.position.set(0, 0.5, 5);
+    camera.fov = 60;
   } else if (width < 1024) {
     model.scale.set(1.2, 1.2, 1.2);
-    camera.position.set(0, 1, 4.5);
-    camera.fov = 50;
+    camera.position.set(0, 0.8, 6);
+    camera.fov = 55;
   } else {
     model.scale.set(1.5, 1.5, 1.5);
-    camera.position.set(0, 1, 5);
-    camera.fov = 45;
+    camera.position.set(0, 0.8, 7);
+    camera.fov = 50;
   }
   camera.updateProjectionMatrix();
 }

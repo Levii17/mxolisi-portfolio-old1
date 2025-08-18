@@ -8,19 +8,6 @@ export function initScript() {
     const sections = document.querySelectorAll("section[id]");
     const navLinks = document.querySelectorAll(".nav-links a, .mobile-nav-links a");
     
-    // Theme toggle elements
-    const navbarThemeToggle = document.getElementById("navbar-theme-toggle");
-    const mobileThemeToggle = document.getElementById("mobile-theme-toggle");
-    const heroThemeToggle = document.getElementById("hero-theme-toggle");
-    
-    // Theme toggle icons
-    const navbarMoonIcon = document.getElementById("navbar-moon-icon");
-    const navbarSunIcon = document.getElementById("navbar-sun-icon");
-    const mobileMoonIcon = document.getElementById("mobile-moon-icon");
-    const mobileSunIcon = document.getElementById("mobile-sun-icon");
-    const heroMoonIcon = document.getElementById("hero-moon-icon");
-    const heroSunIcon = document.getElementById("hero-sun-icon");
-    
     if (!navbarCenter || !hero || !mobileMenuBtn || !mobileDropdown || !mobileMenuOverlay) return;
     
     let menuOpen = false;
@@ -143,126 +130,6 @@ export function initScript() {
             document.body.style.overflow = '';
             mobileMenuBtn.innerHTML = '☰';
             mobileMenuBtn.setAttribute('aria-expanded', 'false');
-        }
-    }
-    
-    // ===== THEME TOGGLE FUNCTIONALITY =====
-    function toggleTheme() {
-        const htmlElement = document.documentElement;
-        const currentTheme = htmlElement.getAttribute('data-theme');
-        
-        if (currentTheme === 'dark') {
-            htmlElement.setAttribute('data-theme', 'light');
-            setIconsForLightMode();
-            localStorage.setItem('theme', 'light');
-        } else {
-            htmlElement.setAttribute('data-theme', 'dark');
-            setIconsForDarkMode();
-            localStorage.setItem('theme', 'dark');
-        }
-    }
-    
-    function setIconsForDarkMode() {
-        if (!navbarMoonIcon || !navbarSunIcon) return;
-        
-        // Navbar icons
-        navbarMoonIcon.style.display = 'none';
-        navbarSunIcon.style.display = 'block';
-        // Mobile icons
-        if (mobileMoonIcon && mobileSunIcon) {
-            mobileMoonIcon.style.display = 'none';
-            mobileSunIcon.style.display = 'block';
-        }
-        // Hero icons
-        if (heroMoonIcon && heroSunIcon) {
-            heroMoonIcon.style.display = 'none';
-            heroSunIcon.style.display = 'block';
-        }
-    }
-    
-    function setIconsForLightMode() {
-        if (!navbarMoonIcon || !navbarSunIcon) return;
-        
-        // Navbar icons
-        navbarMoonIcon.style.display = 'block';
-        navbarSunIcon.style.display = 'none';
-        // Mobile icons
-        if (mobileMoonIcon && mobileSunIcon) {
-            mobileMoonIcon.style.display = 'block';
-            mobileSunIcon.style.display = 'none';
-        }
-        // Hero icons
-        if (heroMoonIcon && heroSunIcon) {
-            heroMoonIcon.style.display = 'block';
-            heroSunIcon.style.display = 'none';
-        }
-    }
-    
-    // Function to detect system color scheme preference
-    function getSystemThemePreference() {
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    
-    // Watch for system theme preference changes
-    function watchSystemThemeChanges() {
-        if (window.matchMedia) {
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            
-            // Check if the mediaQuery.addEventListener method is supported (not supported in some older browsers)
-            if (mediaQuery.addEventListener) {
-                mediaQuery.addEventListener('change', (e) => {
-                    // Only apply system changes if user hasn't manually set a theme
-                    if (!localStorage.getItem('theme')) {
-                        const newTheme = e.matches ? 'dark' : 'light';
-                        document.documentElement.setAttribute('data-theme', newTheme);
-                        
-                        if (newTheme === 'dark') {
-                            setIconsForDarkMode();
-                        } else {
-                            setIconsForLightMode();
-                        }
-                    }
-                });
-            } else if (mediaQuery.addListener) {
-                // Fallback for older browsers
-                mediaQuery.addListener((e) => {
-                    if (!localStorage.getItem('theme')) {
-                        const newTheme = e.matches ? 'dark' : 'light';
-                        document.documentElement.setAttribute('data-theme', newTheme);
-                        
-                        if (newTheme === 'dark') {
-                            setIconsForDarkMode();
-                        } else {
-                            setIconsForLightMode();
-                        }
-                    }
-                });
-            }
-        }
-    }
-    
-    // Initialize theme from localStorage or system preference
-    function initTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        
-        if (savedTheme) {
-            // User has manually set a preference, use that
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            if (savedTheme === 'dark') {
-                setIconsForDarkMode();
-            } else {
-                setIconsForLightMode();
-            }
-        } else {
-            // No user preference saved, use system preference
-            const systemTheme = getSystemThemePreference();
-            document.documentElement.setAttribute('data-theme', systemTheme);
-            
-            if (systemTheme === 'dark') {
-                setIconsForDarkMode();
-            } else {
-                setIconsForLightMode();
-            }
         }
     }
     
@@ -423,30 +290,15 @@ export function initScript() {
             }
         });
     });
-    
-    // Theme toggle event listeners
-    if (navbarThemeToggle) navbarThemeToggle.addEventListener('click', toggleTheme);
-    if (mobileThemeToggle) mobileThemeToggle.addEventListener('click', toggleTheme);
-    if (heroThemeToggle) heroThemeToggle.addEventListener('click', toggleTheme);
+
     
     // ===== INITIALIZATION =====
-    
-    // Initialize navbar
+
     handleScroll();
     mobileMenuBtn.setAttribute('aria-expanded', 'false');
-    
-    // Initialize theme
-    initTheme();
-    
-    // Start watching for system theme changes
-    watchSystemThemeChanges();
-    
-    // Set initial active class on navigation
     setActiveNavItem();
-    
     // Initialize particles
     initParticles();
-    
     // Animate hero elements
     animateHeroElements();
 }

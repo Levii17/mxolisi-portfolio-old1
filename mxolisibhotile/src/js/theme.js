@@ -1,51 +1,55 @@
-// Theme Manager
-const themeToggleBtns = document.querySelectorAll('.theme-toggle');
-const currentTheme = localStorage.getItem('theme');
+// Theme Manager - uses event delegation for dynamic elements
+let currentTheme = localStorage.getItem('theme') || 'light';
 
-// Apply saved theme
+// Apply theme consistently
 function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme || 'light');
-  localStorage.setItem('theme', theme || 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  updateThemeIcons(theme);
 }
 
-// Initialize theme
-function initializeTheme() {
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  applyTheme(savedTheme);
+// Update all theme icons
+function updateThemeIcons(theme) {
+  const themeToggles = document.querySelectorAll('.theme-toggle');
   
-  themeToggleBtns.forEach(btn => {
-    const moonIcon = btn.querySelector('#moon-icon');
-    const sunIcon = btn.querySelector('#sun-icon');
+  themeToggles.forEach(btn => {
+    const moonIcon = btn.querySelector('.moon-icon');
+    const sunIcon = btn.querySelector('.sun-icon');
     
-    if (savedTheme === 'dark') {
-      moonIcon.style.display = 'none';
-      sunIcon.style.display = 'block';
+    if (theme === 'dark') {
+      if (moonIcon) moonIcon.style.display = 'none';
+      if (sunIcon) sunIcon.style.display = 'block';
     } else {
-      moonIcon.style.display = 'block';
-      sunIcon.style.display = 'none';
+      if (moonIcon) moonIcon.style.display = 'block';
+      if (sunIcon) sunIcon.style.display = 'none';
     }
   });
 }
 
-// Toggle theme
-function toggleTheme() {
-  const currentTheme = localStorage.getItem('theme') || 'light';
-  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+// Handle theme toggle clicks
+function handleThemeToggle(e) {
+  if (e.target.closest('.theme-toggle')) {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    applyTheme(currentTheme);
+  }
+}
+
+// Initialize theme
+export function initTheme() {
+  // Apply saved theme or system preference
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (!currentTheme) currentTheme = systemPrefersDark ? 'dark' : 'light';
   
-  applyTheme(newTheme);
-  themeToggleBtns.forEach(btn => {
-    btn.querySelectorAll('svg').forEach(icon => {
-      icon.style.display = icon.id.includes(newTheme) ? 'block' : 'none';
-    });
+  applyTheme(currentTheme);
+  
+  // Use event delegation for theme toggles
+  document.body.addEventListener('click', handleThemeToggle);
+  
+  // Watch for system theme changes
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (!localStorage.getItem('theme')) {
+      currentTheme = e.matches ? 'dark' : 'light';
+      applyTheme(currentTheme);
+    }
   });
 }
-
-
-export function initTheme() {
-  initializeTheme();
-}
-
-// Add event listeners to all theme toggles
-themeToggleBtns.forEach(btn => {
-  btn.addEventListener('click', toggleTheme);
-});
