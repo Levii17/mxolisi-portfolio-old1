@@ -191,14 +191,14 @@
 }
 
 // Project image section
-.project-image, .project-video {
+.project-image {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 5%;
     
-    img, video {
+    img {
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
@@ -325,7 +325,7 @@
         // position: relative;
         // top: -155px;
         // right: 0;
-        background: var(--color-surface);
+        background: whitesmoke;
         border: 2px solid var(--color-border);
         margin-left: auto;
         padding: 10px;

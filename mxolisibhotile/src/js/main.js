@@ -23,19 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
     script.onload = () => {
       if (window.particlesJS) {
         // Try to load config from /particles.json
-        window.particlesJS.load('particles-js', '/particles.json', function() {
-          // Check if particles loaded, else fallback
-          const canvas = document.querySelector('#particles-js > canvas');
-          if (!canvas) {
+        fetch('/particles.json')
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Particles config not found');
+          })
+          .then(config => {
+            window.particlesJS('particles-js', config);
+          })
+          .catch(error => {
+            console.warn('Using fallback particles config:', error);
             // Fallback config if /particles.json fails or is missing
             window.particlesJS('particles-js', {
               particles: {
                 number: { value: 60, density: { enable: true, value_area: 800 } },
-                color: { value: '#ffffff' },
+                color: { value: '#286EFF' },
                 shape: { type: 'circle' },
                 opacity: { value: 0.5, random: false },
                 size: { value: 3, random: true },
-                line_linked: { enable: true, distance: 150, color: '#ffffff', opacity: 0.4, width: 1 },
+                line_linked: { enable: true, distance: 150, color: '#286EFF', opacity: 0.4, width: 1 },
                 move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
               },
               interactivity: {
@@ -52,9 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
               },
               retina_detect: true
             });
-            console.warn('Fallback particles config used. Check /particles.json.');
-          }
-        });
+          });
       } else {
         console.error('particlesJS not found after script load.');
       }
